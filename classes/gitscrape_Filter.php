@@ -50,30 +50,5 @@
 
       return $return;
     }
-
-    public function get_files ( $shell_out ) {
-      $files = [];
-      $return = [];
-
-      $lines = explode( PHP_EOL, $git_files );
-
-      if( !empty($lines) ) {
-
-        foreach( $lines as $line ) {
-          if( substr($line, 0, 3) === '+++' ) $files[] = $line;
-        }
-      }
-
-      if( !empty($files) ) {
-
-        foreach( $files as $file ) {
-
-          preg_match( '/[\s*]b\/(.*)/i', $file, $match );
-          if( !empty($match) && $match[1] ) $return[] = $match[1];
-        }
-      }
-
-      return $return;
-    }
   }
 ?>
