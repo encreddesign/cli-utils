@@ -10,15 +10,13 @@
 
   if( $commit_n ) {
 
-    $params = $argv;
-    array_shift($params);
+    $script_args = [];
 
-    $uploader = new Scrape_Core( $params );
+    $uploader = new Scrape_Core( $commit_n );
     $uploader->run();
 
   } else {
 
-    Scrape_Core::log( GitScraper::$error, 'Commit number needed...php uploader.php [commit]' );
-
+    Scrape_Core::log( Scrape_Core::$error, "Commit number needed...php uploader.php [commit(s)]" );
   }
 ?>

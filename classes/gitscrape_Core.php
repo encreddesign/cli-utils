@@ -5,9 +5,9 @@
   class Scrape_Core {
 
     private $cwd;
-    private $use_gem;
+
     private $commit_n;
-    private $params;
+    private $script_args;
 
     private $git = [
       'lg' => 'git lg',
@@ -21,10 +21,10 @@
     public static $warning = "\033[33m";
     public static $success = "\033[32m";
 
-    public function __construct ( $commit_n, $params = [] ) {
+    public function __construct ( $commit_n, $script_args = [] ) {
 
       $this->commit_n = $commit_n;
-      $this->params = $params;
+      $this->script_args = $script_args;
 
       $this->cwd = dirname( __FILE__ );
     }
@@ -38,17 +38,13 @@
 
         if( $shell_out ) {
 
-          $filtered_commits = $this->filter_commits($shell_out, [
-            'type' => 'author',
-            'key' => 'name',
-            'value' => 'Geoff'
-          ]);
+          $filtered_commits = $this->filter_commits($shell_out, $this->cli_args);
 
           foreach($filtered_commits as $commit) {
-            // $command = $this->args( $this->git['show'], array($commit['commit']) );
-            // $shell_out = shell_exec( $command );
-            //
-            // if( $shell_out ) $this->format_output($shell_out);
+            $command = $this->args( $this->git['show'], array($commit['commit']) );
+            $shell_out = shell_exec( $command );
+
+            if( $shell_out ) $this->format_output($shell_out);
           }
         } else {
           throw new Exception( 'Issue executing git command ['.$command.']' );
@@ -64,7 +60,7 @@
       $files = [];
       $return = [];
 
-      $lines = explode( PHP_EOL, $git_files );
+      $lines = explode( PHP_EOL, $shell_out );
 
       if( !empty($lines) ) {
 
@@ -135,7 +131,7 @@
           self::log( self::$success, "file group{$type}" );
         } else {
 
-          $type = " \033[34m[Unkown Group}]\033[0m ";
+          $type = " \033[34m[Unkown Group]\033[0m ";
           self::log( self::$success, "file group{$type}" );
         }
 
