@@ -76,24 +76,27 @@
     */
     public function run ()
     {
-
       try
       {
-
-        $command = $this->args( $this->git['show'], $this->commit_n );
+        $command = $this->args( $this->git['show'], [$this->commit_n] );
         $shell_out = shell_exec( $command );
 
         if( $shell_out )
         {
-
-          $filtered_commits = $this->filter_commits($shell_out, $this->cli_args);
-
-          foreach($filtered_commits as $commit)
+          if( !empty($this->script_args) )
           {
-            $command = $this->args( $this->git['show'], array($commit['commit']) );
-            $shell_out = shell_exec( $command );
+            $filtered_commits = $this->filter_commits($shell_out, $this->script_args);
 
-            if( $shell_out ) $this->format_output($shell_out);
+            foreach($filtered_commits as $commit)
+            {
+              $command = $this->args( $this->git['show'], array($commit['commit']) );
+              $shell_out = shell_exec( $command );
+
+              if( $shell_out ) $this->format_output($shell_out);
+            }
+          }
+          else {
+            $filtered_commits = $this->format_output($shell_out);
           }
         }
         else {
@@ -233,11 +236,11 @@
     *
     * @return String
     */
-    private function args ( $cmd, $args = [] )
+    private function args ( $cmd, $cli_args = [] )
     {
-      if( !empty($args) )
+      if( !empty($cli_args) )
       {
-        return $cmd.' '.join( ' ', $args );
+        return $cmd.' '.join( ' ', $cli_args );
       }
       else {
         return $cmd;

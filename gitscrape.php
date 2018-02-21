@@ -14,9 +14,13 @@
   */
   if( $commit_n )
   {
-    $script_args = [];
+    $script_args = $argv;
 
-    $uploader = new Scrape_Core( $commit_n );
+    // shift first 2 args, not classed as script args
+    array_shift($script_args);
+    array_shift($script_args);
+
+    $uploader = new Scrape_Core( $commit_n, $script_args );
     $uploader->run();
   }
   else {
