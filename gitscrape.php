@@ -8,15 +8,18 @@
 
   $commit_n = ( isset($argv[1]) ? $argv[1] : null );
 
-  if( $commit_n ) {
-
+  /**
+  * make sure we commit number(s) passed to our script
+  * if report error to console
+  */
+  if( $commit_n )
+  {
     $script_args = [];
 
     $uploader = new Scrape_Core( $commit_n );
     $uploader->run();
-
-  } else {
-
+  }
+  else {
     Scrape_Core::log( Scrape_Core::$error, "Commit number needed...php uploader.php [commit(s)]" );
   }
 ?>

@@ -1,28 +1,59 @@
 <?php
 
-  class Scrape_Filter {
+  /**
+  * Class Scrape_Filter
+  */
 
+  class Scrape_Filter
+  {
+
+    /**
+    * @var shell_out
+    */
     private $shell_out;
+
+    /**
+    * @var author_info
+    */
     private $author_info = [];
 
+    /**
+    * @var track_idx
+    */
     private $track_idx = 0;
 
-    public function __construct ( $shell_output ) {
+    /**
+    * Filter construct
+    * @param shell_output
+    */
+    public function __construct ( $shell_output )
+    {
       $this->shell_out = $shell_output;
     }
 
-    public function query_author ( $author_value, $type = 'name' ) {
+    /**
+    * queries shell output for authors, and builds array with names and commits
+    * @param author_value
+    * @param type
+    *
+    * @return Array
+    */
+    public function query_author ( $author_value, $type = 'name' )
+    {
       $return = [];
       $authors = [];
 
       $lines = explode( PHP_EOL, $this->shell_out );
 
-      if( !empty($lines) ) {
+      if( !empty($lines) )
+      {
         $current_commit = 0;
 
-        foreach($lines as $line) {
+        foreach($lines as $line)
+        {
 
-          if( substr($line, 0, 6) === 'commit' ) {
+          if( substr($line, 0, 6) === 'commit' )
+          {
 
             $current_commit = $line;
             $authors[$current_commit] = null;
@@ -32,19 +63,36 @@
         }
       }
 
-      if( !empty($authors) ) {
+      if( !empty($authors) )
+      {
+        $return = $this->build_author_array($authors);
+      }
 
-        foreach($authors as $key_commit => $author) {
-          $author_arr = Query_Author::author_arr($author['author']);
-          $author_commit = Query_Author::author_commit($key_commit);
+      return $return;
+    }
 
-          if( isset($author_arr[$type]) && $author_arr[$type] === $author_value ) {
+    /**
+    * builds author array from scraped log
+    * @param authors
+    *
+    * @return Array
+    */
+    private function build_author_array ( $authors = [] )
+    {
+      $return = [];
 
-            $return[$this->track_idx]['commit'] = $author_commit;
-            $return[$this->track_idx]['author'] = $author_arr;
+      foreach($authors as $key_commit => $author)
+      {
+        $author_arr = Query_Author::author_arr($author['author']);
+        $author_commit = Query_Author::author_commit($key_commit);
 
-            $this->track_idx++;
-          }
+        if( isset($author_arr[$type]) && $author_arr[$type] === $author_value )
+        {
+
+          $return[$this->track_idx]['commit'] = $author_commit;
+          $return[$this->track_idx]['author'] = $author_arr;
+
+          $this->track_idx++;
         }
       }
 
