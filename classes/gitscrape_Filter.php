@@ -65,7 +65,7 @@
 
       if( !empty($authors) )
       {
-        $return = $this->build_author_array($authors);
+        $return = $this->build_author_array($author_value, $authors, $type);
       }
 
       return $return;
@@ -77,7 +77,7 @@
     *
     * @return Array
     */
-    private function build_author_array ( $authors = [] )
+    private function build_author_array ( $author_value, $authors = [], $type )
     {
       $return = [];
 

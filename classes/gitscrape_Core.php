@@ -187,7 +187,7 @@
 
         if( empty($matched_author) )
         {
-          throw new Exception("No commits found by author {$query['author']['value']}");
+          throw new Exception("No commits found by author {$query['value']}");
         }
 
         return $matched_author;

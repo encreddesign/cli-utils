@@ -1,10 +1,12 @@
 <?php
 
   // required scripts
-  require_once('models/query_Author.php');
+  require('models/query_Author.php');
 
-  require_once('classes/gitscrape_Filter.php');
-  require_once('classes/gitscrape_Core.php');
+  require('classes/gitscrape_Filter.php');
+  require('classes/gitscrape_Core.php');
+
+  require('classes/gitscrape_Cli.php');
 
   $commit_n = ( isset($argv[1]) ? $argv[1] : null );
 
@@ -20,7 +22,7 @@
     array_shift($script_args);
     array_shift($script_args);
 
-    $uploader = new Scrape_Core( $commit_n, $script_args );
+    $uploader = new Scrape_Core( $commit_n, Cli_Helper::get_flags($script_args) );
     $uploader->run();
   }
   else {
